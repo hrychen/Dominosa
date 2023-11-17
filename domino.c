@@ -1,61 +1,77 @@
 #include <stdio.h>
+#include "fichero.h"
 #include "colores.h"
-#define MAXFILS	11
-#define MAXCOLS	11
+
+#define SIZE_NOMBRE_FICHERO 80
+#define MAXFILS 11
+#define MAXCOLS 11
 
 typedef struct {
-	int fils;
-	int cols;
-	int mat[MAXFILS][MAXCOLS];
+    int fils;
+    int cols;
+    int mat[MAXFILS][MAXCOLS];
 } t_matriz;
 
-int main () {
-	/*t_matriz dominosa = {10,11,
-	{{0,2,1,0,6,0,3,4,4,6,2},
-	{4,8,4,2,9,0,6,0,9,5,6},
-	{8,4,5,7,2,1,1,3,4,0,4},
-	{0,3,8,7,8,7,2,3,3,5,3},
-	{1,6,9,8,9,1,1,4,6,1,9},
-	{9,9,4,0,6,5,6,8,8,8,9},
-	{6,2,9,0,6,3,8,3,7,5,7},
-	{2,2,9,5,2,7,5,2,4,8,7},
-	{4,5,0,7,7,6,1,2,1,8,7},
-	{7,0,5,1,3,3,9,5,5,1,3}}};*/
+int main() {
 	
-	t_matriz dominosa = {3,4,{{2,2,2,1},{0,0,1,0},{2,0,1,1}}};
-	int i, j;
-	char f;
-	
-	printf("Introduce el nombre del fichero: ");
-	//scanf
-	
-	printf("\n\n");
-	//funcion para imprimir tablero: 
-	for (i=0; i < dominosa.cols; i++) {
-		printf("%d", i);
-	}
-	printf("\n +");
-	for(i=0; i < dominosa.cols; i++) {
-		printf("---+");
-	}
-	printf("\n");
-	for (i=0; i < dominosa.fils; i++) {
-		printf("%c|", 'A'+i);
-		for (j=0; j < dominosa.cols; j++) {
-			printf_color_num(dominosa.mat[i][j]);
-			printf(" %d  ", dominosa.mat[i][j]);
-			printf_reset_color();
-			}
-		printf("\n");
-		for (j=0; j <= dominosa.cols; j++) {
-			printf(" +  ");
-		}
-		printf("\n");
-	}
-	printf("\n");
+    t_matriz dominosa;
+    int err, f, c, n, i, j;
+    char nombre_fichero[SIZE_NOMBRE_FICHERO];
 
-	//Logico del juego.
+    printf("\nIntroduce el nombre del fichero: ");
+    scanf("%s%*c", nombre_fichero);
+    err = abrir_fichero(nombre_fichero);
+    if (err != ABRIR_FICHERO_OK) {
+        printf("ERROR: FICHERO NO ENCONTRADO.\n");
+        printf("PUEDE QUE EL NOMBRE NO SEA EL CORRECTO O QUE ESTE EN OTRO DIRECTORIO.\n");
+        return -1; // Agrega return para terminar el programa si hay error
+    }
+
+    n = leer_int_fichero(); // Este valor no se usa actualmente
+    dominosa.fils = leer_int_fichero();
+    dominosa.cols = leer_int_fichero();
+
+    // Leer los datos de la matriz
+    for (f = 0; f < dominosa.fils; f++) {
+        for (c = 0; c < dominosa.cols; c++) {
+            dominosa.mat[f][c] = leer_int_fichero();
+        }
+    }
+
+    // Imprimir el tablero
+
+	printf("\nDominosa %dx%d, fils = %d, cols = %d\n\n", n, n, dominosa.fils, dominosa.cols);
+
+    for (i = 0; i < dominosa.cols; i++) {
+        printf("%d", i);
+    }
+
+    printf("\n +");
+    for (i = 0; i < dominosa.cols; i++) {
+        printf("---+");
+    }
+    printf("\n");
+
+    for (i = 0; i < dominosa.fils; i++) {
+        printf("%c|", 'A' + i);
+        for (j = 0; j < dominosa.cols; j++) {
+            printf_color_num(dominosa.mat[i][j]);
+            printf(" %d  ", dominosa.mat[i][j]);
+            printf_reset_color();
+        }
+        printf("\n");
+        for (j = 0; j < dominosa.cols; j++) {
+            printf(" +  ");
+        }
+        printf("\n");
+    }
+    printf("\n");
+
+    cerrar_fichero();
+
+    // Aquí continúa la lógica del juego
 
 
 
+    return 0;
 }
